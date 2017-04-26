@@ -19,6 +19,8 @@ import java.util.prefs.Preferences;
 
 public class MainController implements Initializable {
 
+    // region Fields
+
     //region FXML Components
     @FXML
     private Label SsidLabel;
@@ -37,8 +39,34 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn MacColumn;
     //endregion
+
     private ObservableList<Device> dataList;
     private Preferences prefs;
+    private Thread user;
+    private boolean isRunning;
+
+    // endregion
+
+    // region Getter Setter
+
+    public ObservableList<Device> getDataList() {
+        return dataList;
+    }
+
+    public String getSsid(){
+        return prefs.get("ssid", "");
+    }
+
+    public String getPassword(){
+        return prefs.get("password", "");
+    }
+
+    // endregion
+
+    // region Methods
+
+    // region FXML methods
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         DeviceColumn.setCellValueFactory(new PropertyValueFactory<Device,String>("deviceName"));
@@ -57,28 +85,6 @@ public class MainController implements Initializable {
         prefs = Preferences.userRoot().node("RouterEmulator");
         SsidLabel.setText(SsidLabel.getText() + prefs.get("ssid", ""));
         PasswordLabel.setText(PasswordLabel.getText() + prefs.get("password", ""));
-    }
-
-    public void updateInformation(String ssid, String password) {
-        prefs.put("ssid", ssid);
-        prefs.put("password", password);
-
-        SsidLabel.setText("네트워크 이름 : " + ssid);
-        PasswordLabel.setText("네트워크 암호 : " + password);
-    }
-
-    public ObservableList<Device> getDataList() {
-        return dataList;
-    }
-    private Thread user;
-    private boolean isRunning;
-
-    public String getSsid(){
-        return prefs.get("ssid", "");
-    }
-
-    public String getPassword(){
-        return prefs.get("password", "");
     }
 
     @FXML
@@ -114,4 +120,16 @@ public class MainController implements Initializable {
         loader.<EditorController>getController().setController(this);
         root.getChildren().add(parent);
     }
+
+    // endregion
+
+    public void updateInformation(String ssid, String password) {
+        prefs.put("ssid", ssid);
+        prefs.put("password", password);
+
+        SsidLabel.setText("네트워크 이름 : " + ssid);
+        PasswordLabel.setText("네트워크 암호 : " + password);
+    }
+    // endregion
+
 }
