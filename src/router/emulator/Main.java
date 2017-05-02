@@ -1,4 +1,4 @@
-package routeremulator;
+package router.emulator;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;

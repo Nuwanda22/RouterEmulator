@@ -1,9 +1,11 @@
-package routeremulator;
+package router.emulator;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +15,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 
+import java.io.Console;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.prefs.Preferences;
 
 public class MainController implements Initializable {
@@ -99,6 +106,12 @@ public class MainController implements Initializable {
                 }
             }
         }, 0, 3000);
+
+        Platform.runLater(()->{
+            while (true) {
+                System.out.println("0 ");
+            }
+        });
     }
 
     @FXML
@@ -128,6 +141,8 @@ public class MainController implements Initializable {
 
         SsidLabel.setText("네트워크 이름 : " + ssid);
         PasswordLabel.setText("네트워크 암호 : " + password);
+
+
     }
 
     public void cancelTimer() {
@@ -172,6 +187,81 @@ class DeviceListUpdater {
             } else {
                 devices.remove(random.nextInt(size));
             }
+        }
+    }
+}
+
+class ConnectThread extends Thread {
+    ServerSocket mainServerSocket = null;
+
+    ConnectThread(ServerSocket mainServerSocket) {
+        this.mainServerSocket = mainServerSocket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                Socket serverSocket = mainServerSocket.accept();
+                //outputField.setText("사용자 접속!");
+
+                //li.add(new Joiner(serverSocket));
+                Platform.runLater(() -> {
+                    //totalCount.setText(li.size() + " 명");
+                });
+
+                ServerReader serverReader = new ServerReader(serverSocket);
+                serverReader.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class ServerReader extends Thread {
+    Socket serverSocket = null;
+
+    ServerReader(Socket serverSocket) {
+        this.serverSocket = serverSocket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                InputStream inputStream = serverSocket.getInputStream();
+                byte[] byteArray = new byte[256];
+                int size = inputStream.read(byteArray);
+
+                if (size == -1) { // if(Logout)
+//                    for (int i = 0; i < li.size();) {
+//                        if (serverSocket == li.get(i).UserInfo_socket) {
+//                            li.remove(i);
+//                        } else {
+//                            i++;
+//                        }
+//                        Platform.runLater(() -> {
+//                            //totalCount.setText(li.size() + " 명");
+//                        });
+//                    }
+                    break;
+                }
+
+                String readMessage = new String(byteArray, 0, size, "UTF-8");
+                //outputField.setText(readMessage);
+            }
+        } catch (Exception e) {
+//            for (int i = 0; i < li.size();) {
+//                if (serverSocket == li.get(i).UserInfo_socket) {
+//                    li.remove(i);
+//                } else {
+//                    i++;
+//                }
+//                Platform.runLater(() -> {
+//                    //totalCount.setText(li.size() + " 명");
+//                });
+//            }
         }
     }
 }
