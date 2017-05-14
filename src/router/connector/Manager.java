@@ -1,13 +1,14 @@
 package router.connector;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
  * Created by Nuwanda on 2017-05-02.
  */
 public class Manager {
-    private final java.util.Random rand = new java.util.Random();
+    private final Random rand = new Random();
     private final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
     private final Set<String> identifiers = new HashSet<String>();
 
@@ -28,7 +29,7 @@ public class Manager {
         StringBuilder deviceName = new StringBuilder();
 
         while(deviceName.toString().length() == 0) {
-            for(int i = 0; i < 5; i++) {
+            for(int i = 0; i < 7; i++) {
                 deviceName.append(lexicon.charAt(rand.nextInt(lexicon.length())));
             }
             if(identifiers.contains(deviceName.toString())) {
