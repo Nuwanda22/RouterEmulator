@@ -86,19 +86,19 @@ public class MainController implements Initializable {
         SsidLabel.setText(SsidLabel.getText() + preferences.get("ssid", ""));
         PasswordLabel.setText(PasswordLabel.getText() + preferences.get("password", ""));
 
-//        // 라우터에 연결되는 디바이스
-//        timer = new Timer();
-//        DeviceListUpdater updater = new DeviceListUpdater(devices);
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (isRunning){
-//                    Platform.runLater(()->{
-//                        updater.updateList();
-//                    });
-//                }
-//            }
-//        }, 0, 3000);
+        // 라우터에 연결되는 디바이스
+        timer = new Timer();
+        DeviceListUpdater updater = new DeviceListUpdater(devices);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (isRunning){
+                    Platform.runLater(()->{
+                        updater.updateList();
+                    });
+                }
+            }
+        }, 0, 3000);
     }
 
     @FXML

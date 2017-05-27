@@ -29,11 +29,11 @@ public class Main extends Application {
         primaryStage.show();
 
         // block user access
-//        primaryStage.setOnCloseRequest((event) -> {
-//            loader.<MainController>getController().cancelTimer();
-//        });
+        primaryStage.setOnCloseRequest((event) -> {
+            loader.<MainController>getController().cancelTimer();
+        });
 
-        new ConnectThread(loader.getController()).start();
+        //new ConnectThread(loader.getController()).start();
     }
 
     public static void main(String[] args) {
