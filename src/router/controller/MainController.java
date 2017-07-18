@@ -1,4 +1,4 @@
-package router.emulator;
+package router.controller;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import router.rpi.RPiController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -64,6 +65,7 @@ public class MainController implements Initializable {
 
     // region FXML methods
 
+    // 초기 시작시
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 디바이스 목록 바인딩
@@ -87,20 +89,21 @@ public class MainController implements Initializable {
         PasswordLabel.setText(PasswordLabel.getText() + preferences.get("password", ""));
 
         // 라우터에 연결되는 디바이스
-        timer = new Timer();
-        DeviceListUpdater updater = new DeviceListUpdater(devices);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (isRunning){
-                    Platform.runLater(()->{
-                        updater.updateList();
-                    });
-                }
-            }
-        }, 0, 3000);
+//        timer = new Timer();
+//        DeviceListUpdater updater = new DeviceListUpdater(devices);
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (isRunning){
+//                    Platform.runLater(()->{
+//                        updater.updateList();
+//                    });
+//                }
+//            }
+//        }, 0, 3000);
     }
 
+    // 전원버튼 누를때
     @FXML
     protected void handleOnOffButtonAction(ActionEvent event) {
         isRunning = OnOffToggleButton.isSelected();
@@ -110,6 +113,7 @@ public class MainController implements Initializable {
         }
     }
 
+    // 편집버튼 누를때
     @FXML
     protected void handleEditButtonAction(ActionEvent event) throws IOException {
         StackPane root = (StackPane)OnOffToggleButton.getScene().getRoot();
@@ -131,7 +135,7 @@ public class MainController implements Initializable {
     }
 
     public void cancelTimer() {
-        //timer.cancel();
+        timer.cancel();
     }
 
     public boolean Authenticate(String ssid, String password, String[] output) {

@@ -1,4 +1,4 @@
-package router.emulator;
+package router.controller;
 
 import javafx.beans.property.SimpleStringProperty;
 

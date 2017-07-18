@@ -122,8 +122,8 @@ public class ClientApp extends Application {
             if (event.getCode() == KeyCode.ENTER) {
                 try {
                     String sendMessage = inputField.getText();
-                    byte[] byteArray = sendMessage.getBytes("UTF-8");
                     OutputStream outputStream = clientSocket.getOutputStream();
+                    byte[] byteArray = sendMessage.getBytes("UTF-8");
                     outputStream.write(byteArray);
                 } catch (Exception e) {
                     e.printStackTrace();

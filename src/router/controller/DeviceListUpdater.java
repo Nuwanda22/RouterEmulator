@@ -1,9 +1,8 @@
-package router.emulator;
+package router.controller;
 
 import javafx.collections.ObservableList;
 import router.connector.Manager;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
