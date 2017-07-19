@@ -11,7 +11,7 @@ public class RPiTester {
         RPiController controller = new RPiController();
         controller.addListener(new RPiControllerListener() {
             @Override
-            public void onResponseRecived(RPiResponse response) {
+            public void onResponseReceived(RPiResponse response) {
                 if (response.getStatus()) {
                     System.out.println("[Info] Response " + response.getCommand() + ": " + response.getResult());
                 } else {
@@ -35,6 +35,9 @@ public class RPiTester {
                         controller.request("power", true);
                         break;
                     case 2:
+                        controller.request("power", false);
+                        break;
+                    case 3:
                         controller.request("ssid", "hello world");
                         break;
                     case 0:
@@ -43,7 +46,6 @@ public class RPiTester {
                         System.out.println("Wrong number. Try again.");
                         break;
                 }
-
             }
 
             controller.close();

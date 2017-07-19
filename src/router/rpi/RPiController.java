@@ -28,8 +28,7 @@ public class RPiController implements Closeable {
             new ReadThread().start();
             return true;
         } catch (Exception e) {
-            System.out.print("[Error] ");
-            //e.printStackTrace();
+            System.out.println("[Error] " + e.getMessage() + " <RPiController.connect>");
             return false;
         }
     }
@@ -41,7 +40,7 @@ public class RPiController implements Closeable {
 
             write(requestString);
         } else {
-            System.out.println("[Error] Socket is not connected");
+            System.out.println("[Error] Socket is not connected <RPiController.request>");
         }
     }
 
@@ -69,7 +68,7 @@ public class RPiController implements Closeable {
             byte[] bytes = text.getBytes("UTF-8");
             stream.write(bytes);
         } catch (Exception e) {
-            System.out.print("[Error] " + e.getMessage());
+            System.out.println("[Error] " + e.getMessage() + " <RPiController.write>");
             //e.printStackTrace();
         }
     }
@@ -81,18 +80,23 @@ public class RPiController implements Closeable {
 
                 byte[] bytes = new byte[1024];
                 int size = stream.read(bytes);
-
-                String responseString = new String(bytes, 0, size, "UTF-8");
-                if (!responseString.contains("status")) {
-                    return "";
+                if (size == -1) {
+                    return null;
                 }
 
-                System.out.println("[Info] Response: " + responseString);
-                return responseString;
+                String responseString = new String(bytes, 0, size, "UTF-8");
+
+                if (responseString.contains("status")) {
+                    System.out.println("[Info] Response: " + responseString);
+                    return responseString;
+                } else {
+                    //System.out.println("[Info] Response is not correct format. ");
+                    return "";
+                }
             }
         } catch (Exception e) {
             if (!e.getMessage().equals("Socket closed")) {
-                System.out.print("[Error] " + e.getMessage());
+                System.out.println("[Error] " + e.getMessage() + " <RPiController.read>");
             } else {
                 return "";
             }
@@ -109,12 +113,14 @@ public class RPiController implements Closeable {
         @Override
         public void run() {
             while (runReadThread) {
-                String responseString = read();
-                if (responseString == null) {
-                    System.out.println("[Log] Response is null.");
-                } else if (!responseString.equals("")) {
-                    RPiResponse response = gson.fromJson(responseString, RPiResponse.class);
-                    listeners.forEach(listener -> listener.onResponseRecived(response));
+                String responseString = read().trim();
+                if (responseString != null)  {
+                    try{
+                        RPiResponse response = gson.fromJson(responseString, RPiResponse.class);
+                        listeners.forEach(listener -> listener.onResponseReceived(response));
+                    }catch (com.google.gson.JsonSyntaxException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         }

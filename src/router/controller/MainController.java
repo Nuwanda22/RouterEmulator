@@ -46,6 +46,7 @@ public class MainController implements Initializable {
     private Preferences preferences;
     private boolean isRunning;
     private Timer timer;
+    private RPiController controller;
 
     // endregion
 
@@ -88,6 +89,17 @@ public class MainController implements Initializable {
         SsidLabel.setText(SsidLabel.getText() + preferences.get("ssid", ""));
         PasswordLabel.setText(PasswordLabel.getText() + preferences.get("password", ""));
 
+        controller = new RPiController();
+        controller.addListener(response -> {
+            if(response.getStatus()){
+                if(response.getCommand().equals("power")) {
+                    if(!(boolean)response.getResult()){
+                        devices.clear();
+                    }
+                }
+            }
+        });
+        controller.connect("192.168.0.21", 5000);
         // 라우터에 연결되는 디바이스
 //        timer = new Timer();
 //        DeviceListUpdater updater = new DeviceListUpdater(devices);
@@ -107,10 +119,7 @@ public class MainController implements Initializable {
     @FXML
     protected void handleOnOffButtonAction(ActionEvent event) {
         isRunning = OnOffToggleButton.isSelected();
-
-        if(!isRunning) {
-            devices.clear();
-        }
+        controller.request("power", isRunning);
     }
 
     // 편집버튼 누를때
